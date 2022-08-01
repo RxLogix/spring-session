@@ -2,6 +2,7 @@ package org.grails.plugins.springsession.converters;
 
 import grails.core.GrailsApplication;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.serializer.DefaultDeserializer;
 import org.springframework.core.serializer.support.DeserializingConverter;
 import org.springframework.core.serializer.support.SerializingConverter;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -16,9 +17,11 @@ public class GrailsJdkSerializationRedisSerializer implements RedisSerializer<Ob
     private Converter<Object, byte[]> serializer = new SerializingConverter();
     private Converter<byte[], Object> deserializer;
 
-    public GrailsJdkSerializationRedisSerializer(GrailsApplication grailsApplication) {
-        Assert.notNull(grailsApplication);
-        deserializer = new DeserializingConverter(new JdkDeserializer(grailsApplication.getClassLoader(), false));
+    public GrailsJdkSerializationRedisSerializer() {
+//        Assert.notNull(grailsApplication);
+//        deserializer = new DeserializingConverter(new DefaultDeserializer(grailsApplication.getClassLoader()));
+//        deserializer = new DeserializingConverter(new JdkDeserializer(grailsApplication.getClassLoader(), false));
+        deserializer = new DeserializingConverter();
     }
 
     @Override

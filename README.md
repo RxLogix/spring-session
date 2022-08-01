@@ -1,3 +1,6 @@
+# Grails 6
+The 6.X version of the plugin is compatible with grails 6.
+
 # Grails 3
 The [2.X version of the plugin](https://bintray.com/jeetmp3/plugins/spring-session/view) is compatible only with grails 3.
 
@@ -16,13 +19,21 @@ Currently this plugin provides support for HttpSession only. WebSocket support w
 
 ## Using
 
-Just add a plugin in BuildConfig.groovy.
+Just add plugin dependency in build.gradle for **Grails 6.x**.
 ```
-plugins {
-    runtime ":spring-session:1.2"
+dependencies {
+    implementation "org.grails.plugins:spring-session:6.0-JDK11-M2"
     ...
 }
 ```
+For Grails 3.x 
+```
+dependencies {
+    runtime "org.grails.plugins:spring-session:.2.0-RC1"
+    ...
+}
+```
+
 Note: Redis must be installed on your machine.
 
 ## Configuration
@@ -68,5 +79,5 @@ below property to `true`. By default this value is `false`.
  springsession.allow.persist.mutable = true
  ```
 ## Version Support
-* Grails 2.4 +
+* Grails 6.2.0
 * Redis 2.8 +

@@ -1,16 +1,10 @@
 package spring.session
 
-import grails.core.GrailsApplication
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
+import grails.testing.spring.AutowiredTest
 import spock.lang.*
 import utils.SpringSessionUtils
 
-/**
- * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
- */
-@TestMixin(GrailsUnitTestMixin)
-class SpringSessionUtilsSpec extends Specification {
+class SpringSessionUtilsSpec extends Specification implements AutowiredTest {
 
     void "Canary test"() {
         expect:
@@ -27,7 +21,7 @@ class SpringSessionUtilsSpec extends Specification {
 
         then:
         configObject
-        configObject.maxInactiveInterval == 1800
+        configObject.maxInactiveInterval == 5
     }
 
     void "test getSessionConfig with overrided values"() {
