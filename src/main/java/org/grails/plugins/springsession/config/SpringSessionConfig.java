@@ -3,7 +3,7 @@ package org.grails.plugins.springsession.config;
 import grails.core.GrailsApplication;
 import org.grails.plugins.springsession.converters.GrailsJdkSerializationRedisSerializer;
 import org.grails.plugins.springsession.web.http.HttpSessionSynchronizer;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.connection.PoolConfig;
@@ -20,6 +20,7 @@ import redis.clients.jedis.JedisPoolConfig;
 @EnableRedisHttpSession
 public class SpringSessionConfig {
     private GrailsApplication grailsApplication;
+    private ClassLoader classLoader;
 
     public void setGrailsApplication(GrailsApplication grailsApplication) {
         this.grailsApplication = grailsApplication;
@@ -27,7 +28,7 @@ public class SpringSessionConfig {
 
     @Bean
     public RedisSerializer jdkSerializationRedisSerializer() {
-        return new GrailsJdkSerializationRedisSerializer(grailsApplication);
+        return new GrailsJdkSerializationRedisSerializer();
     }
 
     @Bean
