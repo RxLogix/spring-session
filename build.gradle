@@ -1,31 +1,20 @@
-buildscript {
-    ext {
-        grailsVersion = project.grailsVersion
-    }
-    repositories {
-        mavenLocal()
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-    }
+plugins {
+    id "groovy"
+    id "org.grails.grails-gsp"
+    id "org.grails.grails-web"
+    id "idea"
+//    id "com.bertramlabs.asset-pipeline"
+    id "application"
+    id "eclipse"
+    id "java-library"
+    id "maven-publish"
 }
 
-version "2.0.0-RC3"
 group "org.grails.plugins"
-
-apply plugin: "eclipse"
-apply plugin: "idea"
-apply plugin: "org.grails.grails-plugin"
-apply plugin: "org.grails.grails-plugin-publish"
-
-ext {
-    grailsVersion = project.grailsVersion
-    gradleWrapperVersion = project.gradleWrapperVersion
-}
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven { url "https://repo.grails.org/grails/repo" }
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://repo1.maven.org/maven2/" }
@@ -33,89 +22,88 @@ repositories {
     maven { url "https://build.shibboleth.net/nexus/content/groups/public/" }
     maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
     maven { url "https://repository.jboss.org/maven2/" }
-    maven { url "http://jasperreports.sourceforge.net/maven2" }
-    maven { url "http://10.100.3.6:8080/nexus/content/repositories/common-component-snapshots" }
-    maven { url "http://10.100.3.6:8080/nexus/content/repositories/thirdparty" }
+    maven { url "http://jasperreports.sourceforge.net/maven2"
+        allowInsecureProtocol = true
+    }
+    maven { url "http://10.100.3.6:8080/nexus/content/repositories/common-component-snapshots"
+        allowInsecureProtocol = true
+    }
+    maven { url "http://10.100.3.6:8080/nexus/content/repositories/thirdparty"
+        allowInsecureProtocol = true
+    }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
+configurations {
+    all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details->
+            if (details.requested.group == 'org.seleniumhq.selenium') {
+                details.useVersion('4.19.1')
+            }
+        }
     }
-    applyMavenExclusions false
+}
+
+configurations.configureEach {
+    // This is a workaround for grails-shell exposing a different version of Groovy
+    // than the one used by Gradle. This causes issues with the Groovy compiler.
+    resolutionStrategy.force "org.codehaus.groovy:groovy-xml:$GroovySystem.version"
 }
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    compile "org.springframework.boot:spring-boot-starter-tomcat"
-
-    compile "org.grails:grails-core"
-    compile "org.grails:grails-dependencies"
-    compile "org.grails:grails-web-boot"
-
-    console "org.grails:grails-console"
-
-    testCompile "org.grails:grails-plugin-testing"
-    testCompile "org.grails.plugins:geb"
-
-    testRuntime 'org.seleniumhq.selenium:selenium-chrome-driver:2.44.0'
-
-    compile('org.springframework.session:spring-session:1.3.5.RELEASE')
-    compile('org.springframework.boot:spring-boot-starter-data-redis')
-//    compile('redis.clients:jedis:2.5.2')
-//    compile('redis.clients:jedis:2.9.0')
-    testCompile "org.grails:grails-test-mixins:3.3.0"
+    implementation("org.grails:grails-core")
+    implementation("org.grails:grails-logging")
+    implementation("org.grails:grails-plugin-databinding")
+    implementation("org.grails:grails-plugin-i18n")
+    implementation("org.grails:grails-plugin-interceptors")
+    implementation("org.grails:grails-plugin-rest")
+    implementation("org.grails:grails-plugin-services")
+    implementation("org.grails:grails-plugin-url-mappings")
+    implementation("org.grails:grails-web-boot")
+    implementation("org.grails.plugins:gsp")
+    implementation("org.grails.plugins:hibernate5")
+    implementation("org.grails.plugins:scaffolding")
+    implementation("org.springframework.boot:spring-boot-autoconfigure")
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-logging")
+    implementation("org.springframework.boot:spring-boot-starter-tomcat")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    compileOnly("io.micronaut:micronaut-inject-groovy")
+    console("org.grails:grails-console")
+    api("org.springframework.session:spring-session-data-redis:2.7.4")
+    implementation("redis.clients:jedis:3.8.0")
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.apache.tomcat:tomcat-jdbc")
+    runtimeOnly("org.fusesource.jansi:jansi:1.18")
+    testImplementation("io.micronaut:micronaut-inject-groovy")
+    testImplementation("org.grails:grails-gorm-testing-support")
+    testImplementation("org.grails:grails-web-testing-support")
+    testImplementation("org.grails.plugins:geb")
+    testImplementation("org.seleniumhq.selenium:selenium-api:4.19.1")
+    testImplementation("org.seleniumhq.selenium:selenium-remote-driver:4.19.1")
+    testImplementation("org.seleniumhq.selenium:selenium-support:4.19.1")
+    testImplementation("org.spockframework:spock-core")
+    testRuntimeOnly("org.seleniumhq.selenium:selenium-chrome-driver:4.19.1")
+    testRuntimeOnly("org.seleniumhq.selenium:selenium-firefox-driver:4.19.1")
+    testRuntimeOnly("org.seleniumhq.selenium:selenium-safari-driver:4.19.1")
+    testImplementation("io.micronaut:micronaut-http-client")
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = gradleWrapperVersion
+application {
+    mainClass.set("spring.session.Application")
 }
-grailsPublish {
-    // TODO: Provide values here
-    githubSlug = 'jeetmp3/spring-session'
-    license {
-        name = 'Apache-2.0'
-    }
-    title = "Spring Session Grails Plugin"
-    desc = "Provides support for SpringSession project"
-    developers = [jeetmp3:"Jitendra Singh"]
-    portalUser = ""
-    portalPassword = ""
+
+java {
+    sourceCompatibility = JavaVersion.toVersion("11")
 }
-//
-//bintray {
-//    pkg {
-//        name = "$project.name"
-//        issueTrackerUrl = "https://github.com/jeetmp3/$project.name/issues"
-//        vcsUrl = "https://github.com/jeetmp3/$project.name"
-//        version {
-//            attributes = ['grails-plugin': "$project.group:$project.name"]
-//            name = project.version
-//        }
-//    }
-//}
 
-//test {
-//    testLogging {
-//        events 'started', 'passed'
-//    }
-//}
-
-//test {
-//    jvmArgs '-Xverify:none'
-//}
-
-//integrationTest {
-//    jvmArgs '-Xverify:none'
-//}
-
-//integrationTest {
-//    testLogging {
-//        events 'started', 'passed'
-//    }
-//}
+tasks.withType(Test) {
+    useJUnitPlatform()
+    systemProperty "geb.env", System.getProperty('geb.env')
+    systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
+    systemProperty 'webdriver.chrome.driver', "${System.getenv('CHROMEWEBDRIVER')}/chromedriver"
+    systemProperty 'webdriver.gecko.driver', "${System.getenv('GECKOWEBDRIVER')}/geckodriver"
+}
 
 
 publishing {
@@ -140,8 +128,8 @@ publishing {
     repositories {
         maven {
             credentials {
-                username "farhanali"
-                password "farhan@12345"
+                username "nexusUsername"
+                password "nexusPassword"
             }
             url "http://10.100.3.6:8080/nexus/content/repositories/common-component-snapshots/"
         }

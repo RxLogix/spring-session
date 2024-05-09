@@ -10,9 +10,12 @@ import org.springframework.data.redis.connection.RedisSentinelConfiguration
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.StringRedisSerializer
-import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration
-import org.springframework.session.web.http.CookieHttpSessionStrategy
-import org.springframework.session.web.http.HeaderHttpSessionStrategy
+import org.springframework.session.web.http.CookieHttpSessionIdResolver
+import org.springframework.session.web.http.HeaderHttpSessionIdResolver
+
+//import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration
+//import org.springframework.session.web.http.CookieHttpSessionStrategy
+//import org.springframework.session.web.http.HeaderHttpSessionStrategy
 import redis.clients.jedis.JedisPoolConfig
 import redis.clients.jedis.JedisShardInfo
 import utils.SpringSessionUtils
@@ -85,13 +88,11 @@ class SpringSessionGrailsPlugin extends Plugin {
 
             String defaultStrategy = conf.strategy.defaultStrategy
             if (defaultStrategy == "HEADER") {
-                httpSessionStrategy(HeaderHttpSessionStrategy) {
+                httpSessionIdResolver(HeaderHttpSessionIdResolver) {
                     headerName = conf.strategy.httpHeader.headerName
                 }
             } else {
-                httpSessionStrategy(CookieHttpSessionStrategy) {
-                    cookieName = conf.strategy.cookie.name
-                }
+                httpSessionIdResolver(CookieHttpSessionIdResolver)
             }
 
 //            redisHttpSessionConfiguration(RedisHttpSessionConfiguration) {
