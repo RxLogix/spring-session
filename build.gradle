@@ -43,12 +43,6 @@ configurations {
     }
 }
 
-configurations.configureEach {
-    // This is a workaround for grails-shell exposing a different version of Groovy
-    // than the one used by Gradle. This causes issues with the Groovy compiler.
-    resolutionStrategy.force "org.codehaus.groovy:groovy-xml:$GroovySystem.version"
-}
-
 dependencies {
     implementation("org.grails:grails-core")
     implementation("org.grails:grails-logging")
