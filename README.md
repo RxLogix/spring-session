@@ -19,7 +19,7 @@ Currently this plugin provides support for HttpSession only. WebSocket support w
 Just add a plugin in BuildConfig.groovy.
 ```
 plugins {
-    runtime ":spring-session:1.2"
+    runtime ":spring-session:6.0-JDK11-M1"
     ...
 }
 ```
@@ -68,5 +68,5 @@ below property to `true`. By default this value is `false`.
  springsession.allow.persist.mutable = true
  ```
 ## Version Support
-* Grails 2.4 +
+* Grails 6.2.0
 * Redis 2.8 +
