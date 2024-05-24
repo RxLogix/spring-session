@@ -19,18 +19,7 @@ import java.util.Enumeration;
 @Order(SessionRepositoryFilter.DEFAULT_ORDER + 1)
 public class HttpSessionSynchronizer extends OncePerRequestFilter {
 
-    private final SpringSessionConfigProperties springSessionConfigProperties;
     private Boolean persistMutable;
-
-    /**
-     * Constructor for HttpSessionSynchronizer.
-     *
-     * @param springSessionConfigProperties the properties used to configure the session.
-     */
-    public HttpSessionSynchronizer(SpringSessionConfigProperties springSessionConfigProperties) {
-        this.springSessionConfigProperties = springSessionConfigProperties;
-        this.persistMutable = springSessionConfigProperties.getAllowPersistMutable();
-    }
 
     @Override
     public void afterPropertiesSet() throws ServletException {
