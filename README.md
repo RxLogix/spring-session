@@ -19,7 +19,7 @@ Currently this plugin provides support for HttpSession only. WebSocket support w
 Just add a plugin in BuildConfig.groovy.
 ```
 plugins {
-    runtime ":spring-session:6.0-JDK11-M1"
+    runtime ":spring-session:6.0-JDK11-M2"
     ...
 }
 ```
