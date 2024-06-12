@@ -1,6 +1,5 @@
 import grails.plugins.Plugin
 import groovy.util.logging.Slf4j
-import org.grails.plugins.springsession.converters.GrailsJdkSerializationRedisSerializer
 import org.grails.plugins.springsession.data.redis.config.MasterNamedNode
 import org.grails.plugins.springsession.data.redis.config.NoOpConfigureRedisAction
 import org.grails.plugins.springsession.web.http.HttpSessionSynchronizer
@@ -8,15 +7,9 @@ import org.grails.plugins.springsession.config.SpringSessionConfig
 import org.springframework.data.redis.connection.RedisNode
 import org.springframework.data.redis.connection.RedisSentinelConfiguration
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
-import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.session.web.http.CookieHttpSessionIdResolver
 import org.springframework.session.web.http.HeaderHttpSessionIdResolver
 
-//import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration
-//import org.springframework.session.web.http.CookieHttpSessionStrategy
-//import org.springframework.session.web.http.HeaderHttpSessionStrategy
-import redis.clients.jedis.JedisPoolConfig
 import redis.clients.jedis.JedisShardInfo
 import utils.SpringSessionUtils
 
@@ -42,9 +35,7 @@ class SpringSessionGrailsPlugin extends Plugin {
             SpringSessionUtils.application = grailsApplication
             ConfigObject conf = SpringSessionUtils.sessionConfig
 
-            springSessionConfig(SpringSessionConfig) {
-                grailsApplication = grailsApplication
-            }
+            springSessionConfig SpringSessionConfig
 
             if (conf.redis.sentinel.master && conf.redis.sentinel.nodes) {
                 List<Map> nodes = conf.redis.sentinel.nodes as List<Map>
@@ -76,14 +67,6 @@ class SpringSessionGrailsPlugin extends Plugin {
                     }
                     convertPipelineAndTxResults = conf.redis.connectionFactory.convertPipelineAndTxResults
                 }
-            }
-
-            sessionRedisTemplate(RedisTemplate) { bean ->
-                keySerializer = ref("stringRedisSerializer")
-                hashKeySerializer = ref("stringRedisSerializer")
-                connectionFactory = ref("redisConnectionFactory")
-                defaultSerializer = ref("jdkSerializationRedisSerializer")
-                bean.initMethod = "afterPropertiesSet"
             }
 
             String defaultStrategy = conf.strategy.defaultStrategy

@@ -1,5 +1,6 @@
 plugins {
     id "groovy"
+    id "org.grails.grails-plugin"
     id "org.grails.grails-gsp"
     id "org.grails.grails-web"
     id "idea"
@@ -11,8 +12,6 @@ plugins {
 }
 
 group "org.grails.plugins"
-
-apply plugin: "org.grails.grails-plugin"
 
 repositories {
     mavenLocal()
