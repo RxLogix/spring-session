@@ -2,15 +2,21 @@ package spring.session
 
 import grails.core.GrailsApplication
 import grails.testing.mixin.integration.Integration
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.session.data.redis.RedisIndexedSessionRepository
 import org.springframework.session.web.http.SessionRepositoryFilter
-import spock.lang.*
+import spock.lang.Specification
 
 @Integration
 class SessionConfigSpec extends Specification {
 
+    @Autowired
     SessionRepositoryFilter springSessionRepositoryFilter
+
+    @Autowired
     RedisIndexedSessionRepository sessionRepository
+
+    @Autowired
     GrailsApplication grailsApplication
 
     def setup() {
@@ -20,13 +26,13 @@ class SessionConfigSpec extends Specification {
     }
 
     void "Session Repository Filter bean injected"() {
-        expect: "fix me"
-        springSessionRepositoryFilter
-        sessionRepository
+        expect: "SessionRepositoryFilter and RedisIndexedSessionRepository should be injected"
+        springSessionRepositoryFilter != null
+        sessionRepository != null
     }
 
     void "Check http session timeout"() {
-        expect:
-            sessionRepository.properties.defaultMaxInactiveInterval == 1800
+        expect: "The default max inactive interval should be as configured"
+        sessionRepository.defaultMaxInactiveInterval == (grailsApplication.config.getProperty('springsession.maxInactiveInterval') as Integer) ?: 1800
     }
 }

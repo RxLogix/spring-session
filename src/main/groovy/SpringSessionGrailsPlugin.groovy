@@ -78,11 +78,6 @@ class SpringSessionGrailsPlugin extends Plugin {
                 httpSessionIdResolver(CookieHttpSessionIdResolver)
             }
 
-//            redisHttpSessionConfiguration(RedisHttpSessionConfiguration) {
-//                maxInactiveIntervalInSeconds = conf.maxInactiveInterval
-//                httpSessionStrategy = ref("httpSessionStrategy")
-//            }
-
             configureRedisAction(NoOpConfigureRedisAction)
             httpSessionSynchronizer(HttpSessionSynchronizer) {
                 persistMutable = conf.allow.persist.mutable as Boolean

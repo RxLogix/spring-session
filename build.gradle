@@ -66,7 +66,7 @@ dependencies {
     console("org.grails:grails-console")
     //Redis
     api("org.springframework.session:spring-session-data-redis:2.7.4")
-    implementation("redis.clients:jedis:3.8.0")
+    api("redis.clients:jedis:3.8.0")
     //Testing
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
