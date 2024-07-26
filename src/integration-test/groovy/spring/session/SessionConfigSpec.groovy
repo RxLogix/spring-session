@@ -10,13 +10,8 @@ import spock.lang.Specification
 @Integration
 class SessionConfigSpec extends Specification {
 
-    @Autowired
     SessionRepositoryFilter springSessionRepositoryFilter
-
-    @Autowired
     RedisIndexedSessionRepository sessionRepository
-
-    @Autowired
     GrailsApplication grailsApplication
 
     def setup() {

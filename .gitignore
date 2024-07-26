@@ -17,3 +17,4 @@ classes/
 .gradle
 *.ipr
 /buildSrc/build/
+/qodana.yaml
