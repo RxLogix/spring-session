@@ -33,16 +33,6 @@ repositories {
     }
 }
 
-configurations {
-    all {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details->
-            if (details.requested.group == 'org.seleniumhq.selenium') {
-                details.useVersion('4.19.1')
-            }
-        }
-    }
-}
-
 dependencies {
     implementation("org.grails:grails-core")
     implementation("org.grails:grails-logging")
