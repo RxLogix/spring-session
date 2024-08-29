@@ -16,16 +16,12 @@ import utils.SpringSessionUtils
 @Slf4j
 class SpringSessionGrailsPlugin extends Plugin {
 
-    def version = "2.0.0-SNAPSHOT"
     def grailsVersion = "6.2.0 > *"
     def title = "Spring Session Grails Plugin"
-    def author = "Jitendra Singh"
-    def authorEmail = "jeet.mp3@gmail.com"
+    def author = "RxLogix"
     def description = 'Provides support for SpringSession project'
-    def documentation = "https://github.com/jeetmp3/spring-session"
+    def documentation = "https://github.com/RxLogix/spring-session"
     def license = "APACHE"
-    def issueManagement = [url: "https://github.com/jeetmp3/spring-session/issues"]
-    def scm = [url: "https://github.com/jeetmp3/sprinrequest.getSession()g-session"]
     def loadAfter = ['springSecurityCore', 'cors']
     def profiles = ['web']
 
@@ -86,4 +82,5 @@ class SpringSessionGrailsPlugin extends Plugin {
             println "++++++ Finished Spring Session configuration"
         }
     }
+
 }

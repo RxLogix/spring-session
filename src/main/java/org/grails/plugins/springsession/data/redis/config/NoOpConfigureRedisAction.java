@@ -9,5 +9,6 @@ import org.springframework.session.data.redis.config.ConfigureRedisAction;
 public class NoOpConfigureRedisAction implements ConfigureRedisAction {
     @Override
     public void configure(RedisConnection redisConnection) {
+        //can emit IllegalStateException from redisConnection given redis is not configured for notifications
     }
 }

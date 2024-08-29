@@ -15,7 +15,7 @@ import redis.clients.jedis.JedisPoolConfig;
 public class SpringSessionConfig {
 
     @Bean
-    public RedisSerializer springSessionDefaultRedisSerializer() {
+    public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
         return new GrailsJdkSerializationRedisSerializer();
     }
 
@@ -25,16 +25,16 @@ public class SpringSessionConfig {
     }
 
     @Bean
-    public FilterRegistrationBean springSessionFilter(SessionRepositoryFilter<? extends Session> filter) {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+    public FilterRegistrationBean<SessionRepositoryFilter<? extends Session>> springSessionFilter(SessionRepositoryFilter<? extends Session> filter) {
+        FilterRegistrationBean<SessionRepositoryFilter<? extends Session>> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(filter);
         registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 10);
         return registrationBean;
     }
 
     @Bean
-    public FilterRegistrationBean sessionSynchronizerFilter(HttpSessionSynchronizer filter) {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+    public FilterRegistrationBean<HttpSessionSynchronizer> sessionSynchronizerFilter(HttpSessionSynchronizer filter) {
+        FilterRegistrationBean<HttpSessionSynchronizer> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(filter);
         registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 11);
         return registrationBean;
