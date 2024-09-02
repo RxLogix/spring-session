@@ -40,3 +40,4 @@ public class SpringSessionConfig {
         return registrationBean;
     }
 }
+

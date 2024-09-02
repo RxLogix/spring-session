@@ -76,3 +76,4 @@
 //        grailsApplication.config.springsession.maxInactiveInterval = configObject.maxInactiveInterval
 //    }
 //}
+
