@@ -8,5 +8,5 @@ All notable changes to this project will be documented in this file.
 ## 7.0-JDK11-M1
 - [Merge grails 6.x upgrade to 7.0](https://github.com/RxLogix/spring-session/pull/3)
 
-## 3.0-JDK11-M1
+## 3.0-JDK11-M2
 - Update Readme file with base branch 3.x
