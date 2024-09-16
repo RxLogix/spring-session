@@ -1,15 +1,18 @@
 package spring.session
 
+import groovy.util.logging.Slf4j
+
+@Slf4j
 class SpringSessionDemoController {
 
     def set(String key, String value) {
         session[key] = value
-        println session.id
+        log.debug session.id
         render "success"
     }
 
     def get(String key) {
-        println session.id
+        log.debug session.id
         render(session[key] ?: "NO-KEY")
     }
 

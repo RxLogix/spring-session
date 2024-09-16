@@ -1,31 +1,21 @@
-buildscript {
-    ext {
-        grailsVersion = project.grailsVersion
-    }
-    repositories {
-        mavenLocal()
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-    }
+plugins {
+    id "groovy"
+    id "org.grails.grails-plugin"
+    id "org.grails.grails-gsp"
+    id "org.grails.grails-web"
+    id "idea"
+    id "com.gorylenko.gradle-git-properties"
+    id "application"
+    id "eclipse"
+    id "java-library"
+    id "maven-publish"
 }
 
-version "2.0.0-RC3-beta1"
 group "org.grails.plugins"
-
-apply plugin: "eclipse"
-apply plugin: "idea"
-apply plugin: "org.grails.grails-plugin"
-apply plugin: "org.grails.grails-plugin-publish"
-
-ext {
-    grailsVersion = project.grailsVersion
-    gradleWrapperVersion = project.gradleWrapperVersion
-}
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven { url "https://repo.grails.org/grails/repo" }
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://repo1.maven.org/maven2/" }
@@ -33,116 +23,149 @@ repositories {
     maven { url "https://build.shibboleth.net/nexus/content/groups/public/" }
     maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
     maven { url "https://repository.jboss.org/maven2/" }
-    maven { url "http://jasperreports.sourceforge.net/maven2" }
-    maven { url "http://10.100.3.6:8080/nexus/content/repositories/common-component-snapshots" }
-    maven { url "http://10.100.3.6:8080/nexus/content/repositories/thirdparty" }
+    maven { url "http://jasperreports.sourceforge.net/maven2"
+        allowInsecureProtocol = true
+    }
+    maven { url "http://10.100.3.6:8080/nexus/content/repositories/common-component-snapshots"
+        allowInsecureProtocol = true
+    }
+    maven { url "http://10.100.3.6:8080/nexus/content/repositories/thirdparty"
+        allowInsecureProtocol = true
+    }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
-    }
-    applyMavenExclusions false
-}
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    compile "org.springframework.boot:spring-boot-starter-tomcat"
-
-    compile "org.grails:grails-core"
-    compile "org.grails:grails-dependencies"
-    compile "org.grails:grails-web-boot"
-
-    console "org.grails:grails-console"
-
-    testCompile "org.grails:grails-plugin-testing"
-    testCompile "org.grails.plugins:geb"
-
-    testRuntime 'org.seleniumhq.selenium:selenium-chrome-driver:2.44.0'
-
-    compile('org.springframework.session:spring-session:1.3.5.RELEASE')
-    compile('org.springframework.boot:spring-boot-starter-data-redis')
-//    compile('redis.clients:jedis:2.5.2')
-//    compile('redis.clients:jedis:2.9.0')
-    testCompile "org.grails:grails-test-mixins:3.3.0"
+    implementation("org.grails:grails-core")
+    implementation("org.grails:grails-logging")
+    implementation("org.grails:grails-plugin-databinding")
+    implementation("org.grails:grails-plugin-i18n")
+    implementation("org.grails:grails-plugin-interceptors")
+    implementation("org.grails:grails-plugin-rest")
+    implementation("org.grails:grails-plugin-services")
+    implementation("org.grails:grails-plugin-url-mappings")
+    implementation("org.grails:grails-web-boot")
+    implementation("org.grails.plugins:gsp")
+    implementation("org.grails.plugins:hibernate5")
+    implementation("org.grails.plugins:scaffolding")
+    implementation("org.springframework.boot:spring-boot-autoconfigure")
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-logging")
+    implementation("org.springframework.boot:spring-boot-starter-tomcat")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    compileOnly("io.micronaut:micronaut-inject-groovy")
+    console("org.grails:grails-console")
+    //Redis
+    api("org.springframework.session:spring-session-data-redis:2.7.4")
+    api("redis.clients:jedis:3.8.0")
+    //Testing
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.apache.tomcat:tomcat-jdbc")
+    runtimeOnly("org.fusesource.jansi:jansi:1.18")
+    testImplementation("io.micronaut:micronaut-inject-groovy")
+    testImplementation("org.grails:grails-gorm-testing-support")
+    testImplementation("org.grails:grails-web-testing-support")
+    testImplementation("org.grails.plugins:geb")
+    testImplementation("org.spockframework:spock-core")
+    testImplementation("io.micronaut:micronaut-http-client")
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = gradleWrapperVersion
+application {
+    mainClass.set("spring.session.Application")
 }
-grailsPublish {
-    // TODO: Provide values here
-    githubSlug = 'jeetmp3/spring-session'
-    license {
-        name = 'Apache-2.0'
+
+java {
+    sourceCompatibility = JavaVersion.toVersion("11")
+    //FOR JDK 17 tested
+    //sourceCompatibility = JavaVersion.toVersion("17")
+}
+
+bootRun {
+    ignoreExitValue true
+    jvmArgs(
+            '-Dspring.output.ansi.enabled=always',
+            '-noverify',
+            '-XX:TieredStopAtLevel=1',
+            '-Xmx1024m')
+    sourceResources sourceSets.main
+    String springProfilesActive = 'spring.profiles.active'
+    systemProperty springProfilesActive, System.getProperty(springProfilesActive)
+}
+
+tasks.withType(GroovyCompile) {
+    configure(groovyOptions) {
+        forkOptions.jvmArgs = ['-Xmx1024m']
     }
-    title = "Spring Session Grails Plugin"
-    desc = "Provides support for SpringSession project"
-    developers = [jeetmp3:"Jitendra Singh"]
-    portalUser = ""
-    portalPassword = ""
 }
 
-//bintray {
-//    pkg {
-//        name = "$project.name"
-//        issueTrackerUrl = "https://github.com/jeetmp3/$project.name/issues"
-//        vcsUrl = "https://github.com/jeetmp3/$project.name"
-//        version {
-//            attributes = ['grails-plugin': "$project.group:$project.name"]
-//            name = project.version
-//        }
-//    }
-//}
-//
-//test {
-//    testLogging {
-//        events 'started', 'passed'
-//    }
-//}
-//
-//test {
-//    jvmArgs '-Xverify:none'
-//}
-//
-//integrationTest {
-//    jvmArgs '-Xverify:none'
-//}
-//
-//integrationTest {
-//    testLogging {
-//        events 'started', 'passed'
-//    }
-//}
+
+gitProperties {
+    keys = ['git.branch', 'git.commit.id', 'git.commit.time', 'git.commit.id.abbrev']
+    failOnNoGitDirectory = true
+    extProperty = 'gitProps' // git properties will be put in a map at project.ext.gitProps
+}
+
+generateGitProperties.outputs.upToDateWhen {
+    false
+} // make sure the generateGitProperties task always executes (even when git.properties is not changed)
+
+jar {
+    dependsOn generateGitProperties
+    manifest {
+        attributes("Built-By": System.getProperty("user.name"))
+        attributes(["Plugin-Version"        : version,
+                    "Plugin-Title"          : project.name,
+                    "Plugin-Build-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    "Git-Commit"            : "${-> project.ext.gitProps['git.commit.id.abbrev']}",
+                    "Git-Branch"            : "${-> project.ext.gitProps['git.branch']}"])
+    }
+    from sourceSets.main.output
+    exclude 'git.properties'
+}
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task packageJavadoc(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+task packageGroovydoc(type: Jar) {
+    from groovydoc
+    classifier = 'groovydoc'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+// enable if you wish to package this plugin as a standalone application
+bootJar.enabled = false
 
 publishing {
+
     publications {
         mavenJar(MavenPublication) {
-            pom.withXml {
-                def pomNode = asNode()
-                pomNode.dependencyManagement.replaceNode {}
-
-                // simply remove dependencies without a version
-                // version-less dependencies are handled with dependencyManagement
-                // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
-                pomNode.dependencies.dependency.findAll {
-                    it.version.text().isEmpty()
-                }.each {
-                    it.replaceNode {}
-                }
-            }
             from components.java
+            artifact sourceJar
+            artifact packageJavadoc
+            artifact packageGroovydoc
         }
     }
+
     repositories {
         maven {
+            name = "NexusRepo"
             credentials {
-                username "farhanali"
-                password "farhan@12345"
+                username project.findProperty("nexusUsername") ?: System.getenv("NEXUS_USERNAME")
+                password project.findProperty("nexusPassword") ?: System.getenv("NEXUS_PASSWORD")
             }
-            url "http://10.100.3.6:8080/nexus/content/repositories/common-component-snapshots/"
+            url project.findProperty("nexusUrl") ?: System.getenv("NEXUS_URL")
+            allowInsecureProtocol = project.findProperty("isNexusUrlInsecure") ? true : false
         }
+
     }
 }

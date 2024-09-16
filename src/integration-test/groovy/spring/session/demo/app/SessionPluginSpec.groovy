@@ -1,8 +1,8 @@
 //package spring.session.demo.app
 //
-//import grails.test.mixin.integration.Integration
-//
-//import geb.spock.*
+//import geb.spock.GebSpec
+//import grails.testing.mixin.integration.Integration
+//import spock.lang.Ignore
 //
 ///**
 // * See http://www.gebish.org/manual/current/ for more instructions
@@ -20,11 +20,11 @@
 //
 //    void "test set name"() {
 //        when: 'Setting key name in session with value. And in another call we are getting the same key from session'
-//            go '/springSessionDemo/set?key=name&value=Jitendra'
-//            go '/springSessionDemo/get?key=name'
+//        go '/springSessionDemo/set?key=name&value=Jitendra'
+//        go '/springSessionDemo/get?key=name'
 //
-//        then:"Value should be same as we passed in name parameter"
-//        	$().text() == "Jitendra"
+//        then: "Value should be the same as we passed in name parameter"
+//        $().text() == "Jitendra"
 //    }
 //
 //    void "test Mutable objects"() {
@@ -37,7 +37,7 @@
 //        $().text() != "Value2"
 //    }
 //
-//    void "test Mutable objects after enabling mutable true" () {
+//    void "test Mutable objects after enabling mutable true"() {
 //        setup: "Setting Persist mutable property true"
 //        ConfigObject configObject = new ConfigObject()
 //        configObject.allow.persist.mutable = true
@@ -48,26 +48,32 @@
 //        go '/springSessionDemo/updateMutable?name=Value2'
 //        go '/springSessionDemo/getFinalValue?name=name'
 //
-//        then: " Value must be the updated one"
-//        $().text() == "Value1"
+//        then: "Value must be the updated one"
+//        $().text() == "Value2"
 //    }
 //
-//    void "test session timeout" () {
+//    @Ignore
+//    void "test session timeout"() {
 //        setup: "Setting default session timeout to 5 seconds"
 //        ConfigObject configObject = new ConfigObject()
 //        configObject.maxInactiveInterval = 2
-//        setMutableUpdateTrue(configObject)
+//        setSessionTimeout(configObject)
 //
 //        when: 'setting the key first and then accessing it after 6 seconds'
 //        go '/springSessionDemo/set?key=newName&value=Jitendra'
-//        sleep(1000 * 60 * 2)
+//        sleep(6000)
 //        go '/springSessionDemo/get?key=newName'
 //
-//        then: "Key [name] should be expired"
+//        then: "Key [newName] should be expired"
 //        $().text() == "NO-KEY"
 //    }
 //
 //    def setMutableUpdateTrue(ConfigObject configObject) {
-//        grailsApplication.config.springsession = configObject
+//        grailsApplication.config.springsession.allow.persist.mutable = configObject.allow.persist.mutable
+//    }
+//
+//    def setSessionTimeout(ConfigObject configObject) {
+//        grailsApplication.config.springsession.maxInactiveInterval = configObject.maxInactiveInterval
 //    }
 //}
+

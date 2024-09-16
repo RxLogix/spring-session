@@ -23,7 +23,7 @@ springsession {
     }
     strategy {
         defaultStrategy = "COOKIE"
-        cookie.name = "SESSION"
+        cookie.name = "SESSION"   //cookie.name removed
         httpHeader.headerName = "x-auth-token"
     }
     allow.persist.mutable = false

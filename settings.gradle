@@ -1,0 +1,14 @@
+
+pluginManagement {
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core/" }
+        gradlePluginPortal()
+    }
+    plugins {
+        id "org.grails.grails-web" version "6.1.2"
+        id "org.grails.grails-gsp" version "6.1.2"
+    }
+}
+
+rootProject.name="spring-session"

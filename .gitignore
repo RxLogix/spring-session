@@ -14,8 +14,7 @@ classes/
 /plugin.xml
 /target
 /web-app
-gradle/
 .gradle
-gradlew
-gradlew.bat
 *.ipr
+/buildSrc/build/
+/qodana.yaml
