@@ -1,3 +1,6 @@
+# Grails 6
+The [3.X version of the plugin](https://github.com/RxLogix/spring-session/tree/3.x) is compatible only with grails 6 and JDK 11.
+
 # Grails 3
 The [2.X version of the plugin](https://bintray.com/jeetmp3/plugins/spring-session/view) is compatible only with grails 3.
 
@@ -14,12 +17,22 @@ You can find official documentation for Spring Session project here: http://docs
 
 Currently this plugin provides support for HttpSession only. WebSocket support will be added in further release.
 
-## Using
+## Usage for 3.x
 
 Just add a plugin in BuildConfig.groovy.
 ```
 plugins {
-    runtime ":spring-session:6.0-JDK11-M2"
+    runtime ":spring-session:3.0-JDK11-M1"
+    ...
+}
+```
+
+## Usage for 2.x
+
+Just add a plugin in BuildConfig.groovy.
+```
+plugins {
+    runtime ":spring-session:1.2"
     ...
 }
 ```
