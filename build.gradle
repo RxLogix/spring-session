@@ -5,32 +5,16 @@ plugins {
     id "org.grails.grails-web"
     id "idea"
     id "com.gorylenko.gradle-git-properties"
-    id "application"
     id "eclipse"
-    id "java-library"
     id "maven-publish"
 }
 
 group "org.grails.plugins"
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/repo" }
     maven { url "https://repo.grails.org/grails/core" }
-    maven { url "https://build.shibboleth.net/nexus/content/repositories/releases" }
-    maven { url "https://build.shibboleth.net/nexus/content/groups/public/" }
-    maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
-    maven { url "https://repository.jboss.org/maven2/" }
-    maven { url "http://jasperreports.sourceforge.net/maven2"
-        allowInsecureProtocol = true
-    }
-    maven { url "http://10.100.3.6:8080/nexus/content/repositories/common-component-snapshots"
-        allowInsecureProtocol = true
-    }
-    maven { url "http://10.100.3.6:8080/nexus/content/repositories/thirdparty"
-        allowInsecureProtocol = true
-    }
 }
 
 configurations {
@@ -65,8 +49,8 @@ dependencies {
     compileOnly("io.micronaut:micronaut-inject-groovy")
     console("org.grails:grails-console")
     //Redis
-    api("org.springframework.session:spring-session-data-redis:2.7.4")
-    api("redis.clients:jedis:3.8.0")
+    implementation("org.springframework.session:spring-session-data-redis:2.7.4")
+    implementation("redis.clients:jedis:3.8.0")
     //Testing
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
@@ -85,14 +69,8 @@ dependencies {
     testImplementation("io.micronaut:micronaut-http-client")
 }
 
-application {
-    mainClass.set("spring.session.Application")
-}
-
 java {
     sourceCompatibility = JavaVersion.toVersion("11")
-    //FOR JDK 17 tested
-    //sourceCompatibility = JavaVersion.toVersion("17")
 }
 
 bootRun {
@@ -178,7 +156,7 @@ publishing {
                 password project.findProperty("nexusPassword") ?: System.getenv("NEXUS_PASSWORD")
             }
             url project.findProperty("nexusUrl") ?: System.getenv("NEXUS_URL")
-            allowInsecureProtocol = true
+            allowInsecureProtocol = project.findProperty("isNexusUrlInsecure") ? true : false
         }
 
     }
