@@ -24,7 +24,7 @@ class SpringSessionUtilsSpec extends Specification implements AutowiredTest {
         configObject.maxInactiveInterval == 5
     }
 
-    void "test getSessionConfig with overrided values"() {
+    void "test getSessionConfig with overridden values"() {
         setup:
         SpringSessionUtils.config = null
         SpringSessionUtils.application = getGrailsApplication()

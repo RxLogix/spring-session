@@ -1,5 +1,5 @@
 applicationType: web
-defaultPackage: grails.cc.upgrade.sample
+defaultPackage: spring-session
 testFramework: spock
 sourceLanguage: groovy
 buildTool: gradle

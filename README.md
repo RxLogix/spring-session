@@ -22,7 +22,7 @@ Currently this plugin provides support for HttpSession only. WebSocket support w
 Just add plugin dependency in build.gradle for **Grails 6.x**.
 ```
 dependencies {
-    implementation "org.grails.plugins:spring-session:6.0-JDK11-M2"
+    implementation "org.grails.plugins:spring-session:3.0-JDK11-M3"
     ...
 }
 ```

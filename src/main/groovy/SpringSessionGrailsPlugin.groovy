@@ -16,7 +16,6 @@ import utils.SpringSessionUtils
 @Slf4j
 class SpringSessionGrailsPlugin extends Plugin {
 
-    def version = "2.0.0-SNAPSHOT"
     def grailsVersion = "6.2.0 > *"
     def title = "Spring Session Grails Plugin"
     def author = "Jitendra Singh"
