@@ -12,4 +12,4 @@ All notable changes to this project will be documented in this file.
 - Update Readme file with base branch 3.x
 
 ## 3.0-JDK11-M3
-- PVCM-119734 : Add SSL support to redis for encryption at REST
+- PVCM-119734 : Add SSL support for ElastiCache Redis In-Transit and At-Rest Encryption
