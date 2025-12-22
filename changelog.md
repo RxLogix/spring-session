@@ -13,3 +13,6 @@ All notable changes to this project will be documented in this file.
 
 ## 3.0-JDK11-M3
 - PVCM-119734 : Add SSL support for ElastiCache Redis In-Transit and At-Rest Encryption
+
+## 3.0-JDK11-M4
+- PVCM-128648 : Fix ssl enable check type cast issue while creating bean. Also make poolConfig properties configurable.
