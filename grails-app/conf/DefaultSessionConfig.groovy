@@ -8,6 +8,7 @@ springsession {
             usePool = true
             dbIndex = 0
             convertPipelineAndTxResults = true
+            ssl = true
         }
         poolConfig {
             maxTotal = 8

@@ -41,7 +41,7 @@ class SpringSessionGrailsPlugin extends Plugin {
                 masterName(MasterNamedNode) {
                     name = conf.redis.sentinel.master
                 }
-                shardInfo(JedisShardInfo, conf.redis.connectionFactory.hostName, conf.redis.connectionFactory.port) {
+                shardInfo(JedisShardInfo, conf.redis.connectionFactory.hostName as String, conf.redis.connectionFactory.port as Integer, (conf.redis.connectionFactory.ssl ? true: false) as Boolean) {
                     password = conf.redis.sentinel.password ?: null
                     timeout = conf.redis.sentinel.timeout ?: 5000
                 }
@@ -55,7 +55,12 @@ class SpringSessionGrailsPlugin extends Plugin {
                 }
             } else {
                 // Redis Connection Factory Default is JedisConnectionFactory
+                jedisShardInfo(JedisShardInfo, conf.redis.connectionFactory.hostName as String, conf.redis.connectionFactory.port as Integer, (conf.redis.connectionFactory.ssl ? true: false) as Boolean) {
+                    password = conf.redis.sentinel.password ?: null
+                    connectionTimeout = conf.redis.connectionFactory.timeout ?: 5000
+                }
                 redisConnectionFactory(JedisConnectionFactory) {
+                    shardInfo = ref('jedisShardInfo')
                     hostName = conf.redis.connectionFactory.hostName ?: "localhost"
                     port = conf.redis.connectionFactory.port ?: 6379
                     timeout = conf.redis.connectionFactory.timeout ?: 2000
@@ -63,6 +68,9 @@ class SpringSessionGrailsPlugin extends Plugin {
                     database = conf.redis.connectionFactory.dbIndex
                     if (conf.redis.connectionFactory.password) {
                         password = conf.redis.connectionFactory.password
+                    }
+                    if (conf.redis.connectionFactory.usePool) {
+                        poolConfig = ref('poolConfig')
                     }
                     convertPipelineAndTxResults = conf.redis.connectionFactory.convertPipelineAndTxResults
                 }
