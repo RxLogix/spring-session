@@ -19,7 +19,7 @@ class SpringSessionConfigSpec extends Specification {
     void "should bind jedis pool properties from config when present"() {
         given:
         grailsConfig.getProperty(
-                "springsession.redis.connectionFactory.jedis.pool",
+                "springsession.redis.poolConfig",
                 Map,
                 _
         ) >> [
@@ -43,7 +43,7 @@ class SpringSessionConfigSpec extends Specification {
     void "should keep defaults when pool config is not provided"() {
         given:
         grailsConfig.getProperty(
-                "springsession.redis.connectionFactory.jedis.pool",
+                "springsession.redis.poolConfig",
                 Map,
                 _
         ) >> [:]
@@ -61,7 +61,7 @@ class SpringSessionConfigSpec extends Specification {
     void "should ignore unknown properties gracefully"() {
         given:
         grailsConfig.getProperty(
-                "springsession.redis.connectionFactory.jedis.pool",
+                "springsession.redis.poolConfig",
                 Map,
                 _
         ) >> [
@@ -81,7 +81,7 @@ class SpringSessionConfigSpec extends Specification {
     void "should convert string values to target types"() {
         given:
         grailsConfig.getProperty(
-                "springsession.redis.connectionFactory.jedis.pool",
+                "springsession.redis.poolConfig",
                 Map,
                 _
         ) >> [
@@ -101,7 +101,7 @@ class SpringSessionConfigSpec extends Specification {
     void "should fail fast on invalid property value"() {
         given:
         grailsConfig.getProperty(
-                "springsession.redis.connectionFactory.jedis.pool",
+                "springsession.redis.poolConfig",
                 Map,
                 _
         ) >> [

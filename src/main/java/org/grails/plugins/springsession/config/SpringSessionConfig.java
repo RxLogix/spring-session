@@ -29,7 +29,7 @@ public class SpringSessionConfig {
         JedisPoolConfig config = new JedisPoolConfig();
         Map<String, Object> props =
                 grailsApplication.getConfig().getProperty(
-                        "springsession.redis.connectionFactory.jedis.pool",
+                        "springsession.redis.poolConfig",
                         Map.class,
                         Collections.emptyMap()
                 );
