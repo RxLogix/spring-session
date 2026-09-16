@@ -14,8 +14,9 @@ info:
 spring:
     autoconfigure:
         exclude: org.springframework.boot.autoconfigure.session.SessionAutoConfiguration
-    redis:
-        client-type: jedis
+    data:
+        redis:
+            client-type: jedis
     groovy:
         template:
             check-template-location: false
@@ -78,3 +79,6 @@ endpoints:
 
 springsession:
   maxInactiveInterval: 5
+  redis:
+    connectionFactory:
+      ssl: false

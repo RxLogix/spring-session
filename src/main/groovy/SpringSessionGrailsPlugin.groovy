@@ -5,18 +5,19 @@ import org.grails.plugins.springsession.data.redis.config.NoOpConfigureRedisActi
 import org.grails.plugins.springsession.web.http.HttpSessionSynchronizer
 import org.grails.plugins.springsession.config.SpringSessionConfig
 import org.springframework.data.redis.connection.RedisNode
+import org.springframework.data.redis.connection.RedisPassword
 import org.springframework.data.redis.connection.RedisSentinelConfiguration
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
 import org.springframework.session.web.http.CookieHttpSessionIdResolver
 import org.springframework.session.web.http.HeaderHttpSessionIdResolver
 
-import redis.clients.jedis.JedisShardInfo
 import utils.SpringSessionUtils
 
 @Slf4j
 class SpringSessionGrailsPlugin extends Plugin {
 
-    def grailsVersion = "6.2.0 > *"
+    def grailsVersion = "7.0.0 > *"
     def title = "Spring Session Grails Plugin"
     def author = "Jitendra Singh"
     def authorEmail = "jeet.mp3@gmail.com"
@@ -24,7 +25,7 @@ class SpringSessionGrailsPlugin extends Plugin {
     def documentation = "https://github.com/jeetmp3/spring-session"
     def license = "APACHE"
     def issueManagement = [url: "https://github.com/jeetmp3/spring-session/issues"]
-    def scm = [url: "https://github.com/jeetmp3/sprinrequest.getSession()g-session"]
+    def scm = [url: "https://github.com/jeetmp3/spring-session"]
     def loadAfter = ['springSecurityCore', 'cors']
     def profiles = ['web']
 
@@ -36,43 +37,38 @@ class SpringSessionGrailsPlugin extends Plugin {
 
             springSessionConfig SpringSessionConfig
 
+            // SSL, timeouts and pooling live in the jedisClientConfiguration bean (SpringSessionConfig).
+            // This replaces the JedisShardInfo beans, which no longer exist in Jedis 4+ / Spring Data Redis 3.x.
             if (conf.redis.sentinel.master && conf.redis.sentinel.nodes) {
                 List<Map> nodes = conf.redis.sentinel.nodes as List<Map>
                 masterName(MasterNamedNode) {
                     name = conf.redis.sentinel.master
                 }
-                shardInfo(JedisShardInfo, conf.redis.connectionFactory.hostName as String, conf.redis.connectionFactory.port as Integer, (conf.redis.connectionFactory.ssl ? true: false) as Boolean) {
-                    password = conf.redis.sentinel.password ?: null
-                    timeout = conf.redis.sentinel.timeout ?: 5000
-                }
                 redisSentinelConfiguration(RedisSentinelConfiguration) {
                     master = ref("masterName")
                     sentinels = (nodes.collect { new RedisNode(it.host as String, it.port as Integer) }) as Set
+                    database = (conf.redis.connectionFactory.dbIndex ?: 0) as int
+                    if (conf.redis.sentinel.password) {
+                        sentinelPassword = RedisPassword.of(conf.redis.sentinel.password as String)
+                    }
+                    if (conf.redis.connectionFactory.password) {
+                        password = RedisPassword.of(conf.redis.connectionFactory.password as String)
+                    }
                 }
-                redisConnectionFactory(JedisConnectionFactory, ref("redisSentinelConfiguration"), ref("poolConfig")) {
-                    shardInfo = ref("shardInfo")
-                    usePool = conf.redis.connectionFactory.usePool
+                redisConnectionFactory(JedisConnectionFactory, ref("redisSentinelConfiguration"), ref("jedisClientConfiguration")) {
+                    convertPipelineAndTxResults = (conf.redis.connectionFactory.convertPipelineAndTxResults ? true : false) as Boolean
                 }
             } else {
-                // Redis Connection Factory Default is JedisConnectionFactory
-                jedisShardInfo(JedisShardInfo, conf.redis.connectionFactory.hostName as String, conf.redis.connectionFactory.port as Integer, (conf.redis.connectionFactory.ssl ? true: false) as Boolean) {
-                    password = conf.redis.sentinel.password ?: null
-                    connectionTimeout = conf.redis.connectionFactory.timeout ?: 5000
-                }
-                redisConnectionFactory(JedisConnectionFactory) {
-                    shardInfo = ref('jedisShardInfo')
-                    hostName = conf.redis.connectionFactory.hostName ?: "localhost"
-                    port = conf.redis.connectionFactory.port ?: 6379
-                    timeout = conf.redis.connectionFactory.timeout ?: 2000
-                    usePool = conf.redis.connectionFactory.usePool
-                    database = conf.redis.connectionFactory.dbIndex
+                redisStandaloneConfiguration(RedisStandaloneConfiguration,
+                        (conf.redis.connectionFactory.hostName ?: "localhost") as String,
+                        (conf.redis.connectionFactory.port ?: 6379) as int) {
+                    database = (conf.redis.connectionFactory.dbIndex ?: 0) as int
                     if (conf.redis.connectionFactory.password) {
-                        password = conf.redis.connectionFactory.password
+                        password = RedisPassword.of(conf.redis.connectionFactory.password as String)
                     }
-                    if (conf.redis.connectionFactory.usePool) {
-                        poolConfig = ref('poolConfig')
-                    }
-                    convertPipelineAndTxResults = conf.redis.connectionFactory.convertPipelineAndTxResults
+                }
+                redisConnectionFactory(JedisConnectionFactory, ref("redisStandaloneConfiguration"), ref("jedisClientConfiguration")) {
+                    convertPipelineAndTxResults = (conf.redis.connectionFactory.convertPipelineAndTxResults ? true : false) as Boolean
                 }
             }
 

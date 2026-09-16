@@ -19,3 +19,6 @@ All notable changes to this project will be documented in this file.
 - 
 ## 3.0-JDK11-M5
 - PVCM-128648 : Correct dependencies scope to API to transmit libs files.
+
+## 7.0.0-M1
+- Upgrade plugin to Apache Grails 7.0.16 / Spring Boot 3.5.16 / Java 17 / Jakarta EE. Spring Session 3.5.7, Spring Data Redis 3.5.13, Jedis 6.0.0 (versions now managed by the Grails BOM). Redis connection wiring rewritten from `JedisShardInfo` to `RedisStandaloneConfiguration` / `RedisSentinelConfiguration` + `JedisClientConfiguration`. Session repository is now explicitly `@EnableRedisIndexedHttpSession` to keep Spring Session 2.x indexed behaviour. `springsession.maxInactiveInterval` is now actually applied to the session repository (it was previously ignored; effective default remains 1800s).
